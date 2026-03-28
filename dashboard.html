@@ -138,93 +138,11 @@
 <div class="flex-1 flex overflow-hidden">
 <!-- Center Feed -->
 <section class="flex-1 overflow-y-auto no-scrollbar max-w-2xl mx-auto px-4 py-8 space-y-8">
-<!-- Analyzed Post Card 1 -->
-<div class="bg-surface-container-low rounded-xl p-6 transition-all border border-transparent hover:border-outline-variant/10">
-<div class="flex items-start gap-4 mb-4">
-<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-2">
-<span class="font-bold">Cassandra Intel</span>
-<span class="text-on-surface-variant text-sm">@cass_intel • 2h</span>
-</div>
-<p class="mt-2 text-[15px] leading-relaxed">
-  The decentralization of AI nodes is accelerating faster than centralized models can adapt. We are entering a phase of 'Fragmented Intelligence' where local context outweighs global data.
-</p>
-</div>
-</div>
-<!-- AI Analysis Section -->
-<div class="mt-6 pt-6 border-t border-outline-variant/10">
-<div class="flex items-center gap-2 mb-4">
-<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Oracle Analysis</span>
-</div>
-<div class="grid grid-cols-2 gap-6">
-<div>
-<div class="flex justify-between items-end mb-2">
-<span class="text-xs text-on-surface-variant font-medium">Bias Score</span>
-<span class="text-xs font-bold text-on-surface">12% (Low)</span>
-</div>
-<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-primary rounded-full" style="width: 12%"></div>
-</div>
-</div>
-<div>
-<div class="flex justify-between items-end mb-2">
-<span class="text-xs text-on-surface-variant font-medium">Sentiment Probability</span>
-<span class="text-xs font-bold text-on-surface">84% Neutral</span>
-</div>
-<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-tertiary rounded-full" style="width: 84%"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Analyzed Post Card 2 -->
-<div class="bg-surface-container-low rounded-xl p-6 transition-all border border-transparent hover:border-outline-variant/10">
-<div class="flex items-start gap-4 mb-4">
-<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">person</span>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-2">
-<span class="font-bold">Macro Observer</span>
-<span class="text-on-surface-variant text-sm">@macro_obs • 5h</span>
-</div>
-<p class="mt-2 text-[15px] leading-relaxed">
-  Traditional fiat systems are showing structural weaknesses in the face of algorithmic trading surges. Expect a major pivot by Q4. #Economy #AI
-</p>
-</div>
-</div>
-<!-- AI Analysis Section -->
-<div class="mt-6 pt-6 border-t border-outline-variant/10">
-<div class="flex items-center gap-2 mb-4">
-<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Oracle Analysis</span>
-</div>
-<div class="grid grid-cols-2 gap-6">
-<div>
-<div class="flex justify-between items-end mb-2">
-<span class="text-xs text-on-surface-variant font-medium">Bias Score</span>
-<span class="text-xs font-bold text-on-surface">45% (Medium)</span>
-</div>
-<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-primary/60 rounded-full" style="width: 45%"></div>
-</div>
-</div>
-<div>
-<div class="flex justify-between items-end mb-2">
-<span class="text-xs text-on-surface-variant font-medium">Sentiment Probability</span>
-<span class="text-xs font-bold text-on-surface">62% Alarmist</span>
-</div>
-<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-error rounded-full" style="width: 62%"></div>
-</div>
-</div>
-</div>
-</div>
+<div id="feed">
+  <div id="feed-loading" class="flex items-center justify-center py-16 gap-3 text-on-surface-variant">
+    <span class="material-symbols-outlined animate-spin">progress_activity</span>
+    <span class="text-sm">Loading your feed...</span>
+  </div>
 </div>
 </section>
 <!-- Right Column: Predictive Panel -->
@@ -316,6 +234,7 @@
 </main>
 </div>
 <script>
+  // Populate sidebar user info
   fetch('/api/me')
     .then(res => {
       if (res.status === 401) { window.location.href = '/'; return null; }
@@ -325,6 +244,90 @@
       if (!user) return;
       document.getElementById('user-name').textContent = user.name;
       document.getElementById('user-handle').textContent = '@' + user.username;
+    });
+
+  // Helpers for Oracle Analysis placeholders
+  function biasLabel(pct) {
+    if (pct < 20) return 'Low';
+    if (pct < 50) return 'Medium';
+    return 'High';
+  }
+  function sentimentLabel(pct) {
+    if (pct > 70) return 'Neutral';
+    if (pct > 40) return 'Mixed';
+    return 'Alarmist';
+  }
+  function timeAgo(iso) {
+    if (!iso) return '';
+    const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
+    if (diff < 60) return diff + 'm';
+    if (diff < 1440) return Math.floor(diff / 60) + 'h';
+    return Math.floor(diff / 1440) + 'd';
+  }
+
+  function renderCard(tweet) {
+    const bias = Math.floor(Math.random() * 60) + 5;
+    const sentiment = Math.floor(Math.random() * 80) + 10;
+    const sentColor = sentiment > 70 ? 'bg-tertiary' : sentiment > 40 ? 'bg-primary/60' : 'bg-error';
+    return `
+      <div class="bg-surface-container-low rounded-xl p-6 transition-all border border-transparent hover:border-outline-variant/10">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 overflow-hidden">
+            ${tweet.author.profile_image_url
+              ? `<img src="${tweet.author.profile_image_url}" class="w-full h-full object-cover" alt="${tweet.author.name}">`
+              : `<span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">person</span>`}
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold">${tweet.author.name}</span>
+              <span class="text-on-surface-variant text-sm">@${tweet.author.username} · ${timeAgo(tweet.created_at)}</span>
+            </div>
+            <p class="mt-2 text-[15px] leading-relaxed">${tweet.text}</p>
+          </div>
+        </div>
+        <div class="mt-6 pt-6 border-t border-outline-variant/10">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            <span class="text-[10px] uppercase font-bold tracking-widest text-primary">Oracle Analysis</span>
+          </div>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <div class="flex justify-between items-end mb-2">
+                <span class="text-xs text-on-surface-variant font-medium">Bias Score</span>
+                <span class="text-xs font-bold text-on-surface">${bias}% (${biasLabel(bias)})</span>
+              </div>
+              <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width:${bias}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-end mb-2">
+                <span class="text-xs text-on-surface-variant font-medium">Sentiment Probability</span>
+                <span class="text-xs font-bold text-on-surface">${sentiment}% ${sentimentLabel(sentiment)}</span>
+              </div>
+              <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                <div class="h-full ${sentColor} rounded-full" style="width:${sentiment}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // Load feed
+  fetch('/api/feed')
+    .then(res => res.json())
+    .then(tweets => {
+      const feed = document.getElementById('feed');
+      if (!tweets.length) {
+        feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">No tweets found in your timeline.</p>';
+        return;
+      }
+      feed.innerHTML = tweets.map(renderCard).join('');
+    })
+    .catch(() => {
+      document.getElementById('feed').innerHTML =
+        '<p class="text-center text-on-surface-variant py-16">Could not load timeline.</p>';
     });
 </script>
 </body></html>

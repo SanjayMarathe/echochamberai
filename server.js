@@ -57,7 +57,7 @@ app.get('/callback', async (req, res) => {
 
   try {
     const client = new TwitterApi({ clientId: X_CLIENT_ID, clientSecret: X_CLIENT_SECRET });
-    const { client: userClient } = await client.loginWithOAuth2({
+    const { client: userClient, accessToken } = await client.loginWithOAuth2({
       code,
       codeVerifier,
       redirectUri: CALLBACK_URL,
@@ -65,6 +65,7 @@ app.get('/callback', async (req, res) => {
 
     const { data: user } = await userClient.v2.me();
     req.session.user = { id: user.id, name: user.name, username: user.username };
+    req.session.accessToken = accessToken;
     delete req.session.codeVerifier;
     delete req.session.oauthState;
     res.redirect('/dashboard');
@@ -78,6 +79,37 @@ app.get('/callback', async (req, res) => {
 app.get('/api/me', (req, res) => {
   if (!req.session.user) return res.status(401).json({ error: 'Not authenticated' });
   res.json(req.session.user);
+});
+
+// API: return home timeline tweets for the authenticated user
+app.get('/api/feed', async (req, res) => {
+  if (!req.session.accessToken) return res.status(401).json({ error: 'Not authenticated' });
+
+  try {
+    const userClient = new TwitterApi(req.session.accessToken);
+    const timeline = await userClient.v2.homeTimeline({
+      max_results: 10,
+      'tweet.fields': ['created_at', 'author_id'],
+      'user.fields': ['name', 'username', 'profile_image_url'],
+      expansions: ['author_id'],
+    });
+
+    const tweets = timeline.data.data ?? [];
+    const users = timeline.data.includes?.users ?? [];
+    const usersById = Object.fromEntries(users.map(u => [u.id, u]));
+
+    const feed = tweets.map(tweet => ({
+      id: tweet.id,
+      text: tweet.text,
+      created_at: tweet.created_at,
+      author: usersById[tweet.author_id] ?? { name: 'Unknown', username: 'unknown' },
+    }));
+
+    res.json(feed);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch timeline' });
+  }
 });
 
 // Logout
