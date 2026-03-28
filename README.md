@@ -24,7 +24,6 @@ Break out of your social media bubble. Echo surfaces the opposing viewpoints you
 | AI — Analysis | Gemini 2.5 Flash (intent, viewpoints, bias scoring) |
 | AI — Video Generation | Veo 3.0 (`veo-3.0-generate-001`) |
 | AI — Image Generation | Nano Banana Pro (character profile images) |
-| AI — Live Interaction | Gemini Live (real-time multimodal) |
 | AI — STT | ElevenLabs Scribe v1 |
 | AI — TTS | ElevenLabs `eleven_multilingual_v2` |
 | AI — Video Timestamps | Gemini Files API (on-demand, no pre-indexing) |
