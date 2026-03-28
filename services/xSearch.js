@@ -12,13 +12,17 @@ function resolveAuthors(includes) {
   return Object.fromEntries(users.map(u => [u.id, u]));
 }
 
-function lowerMinFaves(query) {
+function relaxQuery(query) {
   const steps = [
-    ['min_faves:100', 'min_faves:50'],
-    ['min_faves:50', 'min_faves:10'],
+    ['min_retweets:5', 'min_retweets:1'],
+    ['min_retweets:1', ''],
+    // legacy fallback in case Gemini still outputs min_faves
+    ['min_faves:100', 'min_retweets:5'],
+    ['min_faves:50', 'min_retweets:1'],
+    ['min_faves:10', ''],
   ];
   for (const [from, to] of steps) {
-    if (query.includes(from)) return query.replace(from, to);
+    if (query.includes(from)) return query.replace(from, to).trim();
   }
   return null;
 }
@@ -53,7 +57,7 @@ export async function fetchTopPosts(accessToken, query) {
       }));
     }
 
-    const relaxed = lowerMinFaves(currentQuery);
+    const relaxed = relaxQuery(currentQuery);
     if (!relaxed) break;
     currentQuery = relaxed;
   }

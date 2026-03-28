@@ -138,9 +138,15 @@
 <div class="flex-1 flex overflow-hidden">
 <!-- Center Feed -->
 <section class="flex-1 overflow-y-auto no-scrollbar max-w-2xl mx-auto px-4 py-8 space-y-8">
+<div class="flex items-center justify-between mb-2">
+  <span class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Your Posts</span>
+  <button onclick="loadFeed()" class="flex items-center gap-1 text-xs text-primary hover:underline">
+    <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+  </button>
+</div>
 <div id="feed">
   <div id="feed-loading" class="flex items-center justify-center py-16 gap-3 text-on-surface-variant">
-    <span class="material-symbols-outlined animate-spin">progress_activity</span>
+    <span class="material-symbols-outlined">progress_activity</span>
     <span class="text-sm">Loading your feed...</span>
   </div>
 </div>
@@ -314,33 +320,36 @@
       </div>`;
   }
 
-  // Load feed
-  fetch('/api/feed')
-    .then(async res => {
-      const data = await res.json();
-      if (!res.ok) throw { status: res.status, message: data.error };
-      return data;
-    })
-    .then(tweets => {
-      const feed = document.getElementById('feed');
-      if (!tweets.length) {
-        feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">No tweets found.</p>';
-        return;
-      }
-      feed.innerHTML = tweets.map(renderCard).join('');
-    })
-    .catch(err => {
-      const feed = document.getElementById('feed');
-      if (err.status === 402) {
-        feed.innerHTML = `
-          <div class="flex flex-col items-center gap-4 py-16 text-center max-w-sm mx-auto">
-            <span class="material-symbols-outlined text-4xl text-outline">lock</span>
-            <p class="text-sm font-bold text-on-surface">X API upgrade required</p>
-            <p class="text-xs text-on-surface-variant leading-relaxed">Reading tweets requires the X API Basic tier. Upgrade your plan at <a href="https://developer.twitter.com" target="_blank" class="text-primary underline">developer.twitter.com</a> to enable the feed.</p>
-          </div>`;
-      } else {
-        feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">Could not load tweets.</p>';
-      }
-    });
+  function loadFeed() {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '<div class="flex items-center justify-center py-16 gap-3 text-on-surface-variant"><span class="material-symbols-outlined">progress_activity</span><span class="text-sm">Loading...</span></div>';
+    fetch('/api/feed')
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw { status: res.status, message: data.error };
+        return data;
+      })
+      .then(tweets => {
+        if (!tweets.length) {
+          feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">No tweets found.</p>';
+          return;
+        }
+        feed.innerHTML = tweets.map(renderCard).join('');
+      })
+      .catch(err => {
+        if (err.status === 402) {
+          feed.innerHTML = `
+            <div class="flex flex-col items-center gap-4 py-16 text-center max-w-sm mx-auto">
+              <span class="material-symbols-outlined text-4xl text-outline">lock</span>
+              <p class="text-sm font-bold text-on-surface">X API upgrade required</p>
+              <p class="text-xs text-on-surface-variant leading-relaxed">Reading tweets requires the X API Basic tier. Upgrade at <a href="https://developer.twitter.com" target="_blank" class="text-primary underline">developer.twitter.com</a>.</p>
+            </div>`;
+        } else {
+          feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">Could not load tweets.</p>';
+        }
+      });
+  }
+
+  loadFeed();
 </script>
 </body></html>

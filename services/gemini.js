@@ -35,7 +35,8 @@ You are a research assistant that identifies two opposing viewpoints on a topic 
 Topic: "${userPrompt}"
 
 Rules for search queries:
-- Each query MUST end with: min_faves:100 ("1/" OR "🧵") -is:retweet -is:reply
+- Each query MUST end with: min_retweets:5 ("1/" OR "🧵") -is:retweet -is:reply
+- IMPORTANT: use min_retweets (NOT min_faves — that operator is not supported)
 - Use 2-4 targeted keywords for the core topic
 - Do NOT include people's names unless they are central to the debate
 - Make the viewpoints genuinely opposing, not just slightly different

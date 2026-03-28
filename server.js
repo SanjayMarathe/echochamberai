@@ -4,7 +4,7 @@ import session from 'express-session';
 import { TwitterApi } from 'twitter-api-v2';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { classifyIntent, generateViewpoints, matchUserTweets } from './services/gemini.js';
+import { generateViewpoints, matchUserTweets } from './services/gemini.js';
 import { fetchTopPosts, reconstructThread, fetchUserTweets } from './services/xSearch.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -136,32 +136,30 @@ app.post('/api/research/compare-viewpoints', async (req, res) => {
   const { accessToken, user } = req.session;
 
   try {
-    // 1. Classify intent
-    const { intent } = await classifyIntent(user_prompt);
+    // 1. Run viewpoint generation + user tweet fetch in parallel
+    const [{ viewpoint_a, viewpoint_b }, userTweets] = await Promise.all([
+      generateViewpoints(user_prompt),
+      fetchUserTweets(accessToken, user.id).catch(() => []),
+    ]);
 
-    // 2. Self-tweet expansion (if triggered)
+    // 2. Always attempt semantic match against user's tweets (non-fatal)
     let userPerspective = [];
-    if (intent === 'self_tweet_expansion') {
-      try {
-        const userTweets = await fetchUserTweets(accessToken, user.id);
-        if (userTweets.length > 0) {
-          const { matched_ids } = await matchUserTweets(user_prompt, userTweets);
-          const matchedTweets = userTweets.filter(t => matched_ids.includes(t.id));
-          const threadResults = await Promise.all(
+    try {
+      if (userTweets.length > 0) {
+        const { matched_ids } = await matchUserTweets(user_prompt, userTweets);
+        const matchedTweets = userTweets.filter(t => matched_ids.includes(t.id));
+        if (matchedTweets.length > 0) {
+          userPerspective = await Promise.all(
             matchedTweets.map(async t => ({
               root: { ...t, author: user },
               replies: await reconstructThread(accessToken, t.conversation_id, user.id),
             }))
           );
-          userPerspective = threadResults;
         }
-      } catch {
-        // Non-fatal: skip user perspective if it fails
       }
+    } catch {
+      // Non-fatal: skip user perspective silently
     }
-
-    // 3. Generate viewpoints via LLM
-    const { viewpoint_a, viewpoint_b } = await generateViewpoints(user_prompt);
 
     // 4. Fetch top posts for both viewpoints in parallel
     const [postsA, postsB] = await Promise.all([
