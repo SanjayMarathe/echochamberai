@@ -87,7 +87,8 @@ app.get('/api/feed', async (req, res) => {
 
   try {
     const userClient = new TwitterApi(req.session.accessToken);
-    const timeline = await userClient.v2.homeTimeline({
+    const userId = req.session.user.id;
+    const timeline = await userClient.v2.userTimeline(userId, {
       max_results: 10,
       'tweet.fields': ['created_at', 'author_id'],
       'user.fields': ['name', 'username', 'profile_image_url'],
@@ -102,7 +103,7 @@ app.get('/api/feed', async (req, res) => {
       id: tweet.id,
       text: tweet.text,
       created_at: tweet.created_at,
-      author: usersById[tweet.author_id] ?? { name: 'Unknown', username: 'unknown' },
+      author: usersById[tweet.author_id] ?? req.session.user,
     }));
 
     res.json(feed);
