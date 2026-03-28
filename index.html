@@ -73,7 +73,7 @@
     </script>
 <style>
         body {
-            background-color: #0F1419;
+            background-color: #000000;
             color: #DEE3EA;
             font-family: 'Inter', sans-serif;
         }
@@ -92,31 +92,15 @@
 <body class="antialiased overflow-x-hidden selection:bg-primary-container selection:text-white">
 <!-- Background Decoration -->
 <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-<div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[120px]"></div>
-<div class="absolute top-[40%] -left-[5%] w-[40%] h-[40%] rounded-full bg-primary-container/5 blur-[100px]"></div>
-<div class="absolute inset-0 oracle-gradient opacity-40"></div>
-<!-- Abstract Grid Pattern -->
-<svg class="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<pattern height="40" id="grid" patternunits="userSpaceOnUse" width="40">
-<path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1"></path>
-</pattern>
-</defs>
-<rect fill="url(#grid)" height="100%" width="100%"></rect>
-</svg>
+<div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-white/5 blur-[120px]"></div>
+<div class="absolute top-[40%] -left-[5%] w-[40%] h-[40%] rounded-full bg-white/5 blur-[100px]"></div>
 </div>
 <div class="relative z-10 min-h-screen flex flex-col">
 <!-- Top Navigation -->
 <header class="w-full max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
 <div class="flex items-center gap-2">
-<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-on-primary-container text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-</div>
-<span class="text-2xl font-black text-[#DEE3EA] tracking-tighter">EchoChamberAI</span>
-</div>
-<div class="hidden md:flex items-center gap-6">
-<a class="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">Documentation</a>
-<a class="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">API</a>
+<span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-2xl font-black text-[#DEE3EA] tracking-tighter">Echo</span>
 </div>
 </header>
 <main class="flex-grow flex items-center justify-center px-6 py-12">
@@ -135,25 +119,8 @@
 </div>
 <div class="space-y-6 max-w-lg">
 <p class="text-lg text-on-surface-variant leading-relaxed font-medium">
-  Step into the Digital Oracle. We synthesize multi-modal social signals to decode the future of discourse before it happens.
+  See both sides of every conversation. Echo breaks you out of social media bubbles by surfacing the opposing viewpoints you never see.
 </p>
-<!-- Feature Pills -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-<div class="p-4 rounded-DEFAULT bg-surface-container-low border border-outline-variant/10 flex gap-4 items-start">
-<span class="material-symbols-outlined text-primary">neurology</span>
-<div class="space-y-1">
-<h3 class="text-sm font-bold text-on-surface">Neural Synthesis</h3>
-<p class="text-xs text-on-surface-variant leading-snug">Cross-platform data aggregation for objective truth.</p>
-</div>
-</div>
-<div class="p-4 rounded-DEFAULT bg-surface-container-low border border-outline-variant/10 flex gap-4 items-start">
-<span class="material-symbols-outlined text-primary">query_stats</span>
-<div class="space-y-1">
-<h3 class="text-sm font-bold text-on-surface">Trend Velocity</h3>
-<p class="text-xs text-on-surface-variant leading-snug">Predicting narrative shifts with 94% precision.</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 <!-- Sign In Card Section -->
@@ -163,7 +130,7 @@
 <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors duration-700"></div>
 <div class="relative z-10 flex flex-col gap-8">
 <div class="text-center lg:text-left">
-<h2 class="text-2xl font-bold text-on-surface">Access the Chamber</h2>
+<h2 class="text-2xl font-bold text-on-surface">Access Echo</h2>
 <p class="text-sm text-on-surface-variant mt-2">The Oracle awaits your contribution to the predictive engine.</p>
 </div>
 <div class="flex flex-col gap-4">
@@ -173,15 +140,6 @@
 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
 </svg>
 <span>Sign in with X</span>
-</a>
-<div class="flex items-center gap-4 py-2">
-<div class="h-[1px] flex-grow bg-outline-variant/20"></div>
-<span class="text-[10px] font-bold text-outline uppercase tracking-widest">or</span>
-<div class="h-[1px] flex-grow bg-outline-variant/20"></div>
-</div>
-<a href="#" class="w-full h-14 bg-surface-container-highest text-on-surface font-bold rounded-full flex items-center justify-center gap-3 hover:bg-surface-variant transition-all active:scale-[0.98]">
-<span class="material-symbols-outlined">mail</span>
-<span>Continue with Email</span>
 </a>
 </div>
 <p class="text-[11px] text-on-surface-variant text-center leading-relaxed">
@@ -195,12 +153,10 @@
 </div>
 </main>
 <!-- Simple Footer -->
-<footer class="w-full py-8 mt-auto flex flex-col items-center justify-center gap-4 text-center border-t border-[#3F4851]/10 bg-[#0F1419]">
+<footer class="w-full py-8 mt-auto flex flex-col items-center justify-center gap-4 text-center border-t border-[#3F4851]/10 bg-[#000000]">
 <div class="flex gap-6">
 <a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">Privacy</a>
 <a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">Terms</a>
-<a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">API</a>
-<a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">Discourse Guidelines</a>
 </div>
 <p class="text-[11px] uppercase tracking-widest text-[#BFC7D3]">© 2024 EchoChamberAI. Predictive Discourse Engine.</p>
 </footer>

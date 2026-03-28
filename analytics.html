@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EchoChamberAI | Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: { colors: {
+      "surface-dim":"#0f1419","surface-variant":"#30353b","surface-container-lowest":"#0a0f14",
+      "surface-container-highest":"#30353b","surface-tint":"#99cbff","surface-container-low":"#171c21",
+      "secondary":"#b7c9d8","outline":"#89919d","outline-variant":"#3f4851","surface":"#0f1419",
+      "on-secondary-container":"#a9bbc9","error":"#ffb4ab","surface-container":"#1b2025",
+      "on-surface-variant":"#bfc7d3","on-surface":"#dee3ea","surface-bright":"#353a3f",
+      "inverse-surface":"#dee3ea","primary":"#99cbff","secondary-container":"#3a4b57",
+      "primary-container":"#1d9bf0","background":"#0f1419","surface-container-high":"#252a30"
+    }, fontFamily:{"headline":["Inter"],"body":["Inter"]}, borderRadius:{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"} } }
+  }
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #0f1419; color: #dee3ea; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .bar-fill { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+</style>
+</head>
+<body class="antialiased">
+<div class="flex min-h-screen">
+
+<!-- Left Rail -->
+<aside class="h-screen sticky top-0 bg-[#0F1419] flex flex-col gap-8 py-6 px-4 w-64 shrink-0 border-r border-outline-variant/10">
+  <div class="px-2">
+    <h1 class="text-2xl font-black text-[#DEE3EA] tracking-tighter">EchoChamberAI</h1>
+    <p class="text-[11px] uppercase tracking-widest text-[#BFC7D3] mt-1">The Digital Oracle</p>
+  </div>
+  <nav class="flex flex-col gap-2">
+    <a class="flex items-center gap-4 px-4 py-3 rounded-full text-[#BFC7D3] opacity-70 hover:opacity-100 hover:bg-[#252A30] transition-all" href="/dashboard">
+      <span class="material-symbols-outlined">home</span><span>Home</span>
+    </a>
+    <a class="flex items-center gap-4 px-4 py-3 rounded-full text-[#1D9BF0] font-bold bg-[#252A30] scale-105 transition-all" href="/analytics">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">analytics</span><span>Analytics</span>
+    </a>
+    <a class="flex items-center gap-4 px-4 py-3 rounded-full text-[#BFC7D3] opacity-70 hover:opacity-100 hover:bg-[#252A30] transition-all" href="/research">
+      <span class="material-symbols-outlined">explore</span><span>Explore</span>
+    </a>
+  </nav>
+  <div class="mt-auto flex items-center gap-3 px-2 py-4">
+    <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+      <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">person</span>
+    </div>
+    <div class="overflow-hidden">
+      <p id="user-name" class="text-sm font-bold truncate">—</p>
+      <p id="user-handle" class="text-xs text-on-surface-variant truncate">—</p>
+    </div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+  <header class="sticky top-0 z-50 bg-[#0F1419]/80 backdrop-blur-xl border-b border-outline-variant/10 h-16 flex items-center px-8 gap-4">
+    <h2 class="text-lg font-black tracking-tight">Discourse Analytics</h2>
+    <span id="analysis-status" class="text-[10px] uppercase tracking-widest text-on-surface-variant/50 font-bold ml-2"></span>
+  </header>
+
+  <div class="p-8 space-y-8 max-w-6xl mx-auto w-full">
+
+    <!-- ── Summary KPI Row ── -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-row">
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 animate-pulse h-24"></div>
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 animate-pulse h-24"></div>
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 animate-pulse h-24"></div>
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 animate-pulse h-24"></div>
+    </div>
+
+    <!-- ── Analysis Grid ── -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Bias Distribution -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-4">Bias Distribution</p>
+        <div id="chart-bias" class="space-y-3"></div>
+      </div>
+
+      <!-- Sentiment Breakdown -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-4">Sentiment Breakdown</p>
+        <div id="chart-sentiment" class="space-y-3"></div>
+      </div>
+
+      <!-- Discourse Types -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-4">Discourse Type</p>
+        <div id="chart-discourse" class="space-y-3"></div>
+      </div>
+
+    </div>
+
+    <!-- ── Political Analyst Cards ── -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- Polarization Index -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1">crisis_alert</span>
+          <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50">Narrative Polarization Index</p>
+        </div>
+        <div id="polarization-body" class="mt-4">
+          <div class="h-16 bg-surface-container-high rounded-xl animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Echo Chamber Score -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings:'FILL' 1">hub</span>
+          <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50">Echo Chamber Risk Profile</p>
+        </div>
+        <div id="echo-body" class="mt-4">
+          <div class="h-16 bg-surface-container-high rounded-xl animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Viewpoint Dominance -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1">balance</span>
+          <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50">Viewpoint Engagement Dominance</p>
+        </div>
+        <p class="text-[11px] text-on-surface-variant/50 mb-4">Across all debatable posts — which side captures more engagement</p>
+        <div id="viewpoint-body">
+          <div class="h-16 bg-surface-container-high rounded-xl animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Framing Patterns -->
+      <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings:'FILL' 1">format_quote</span>
+          <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50">Framing Patterns</p>
+        </div>
+        <p class="text-[11px] text-on-surface-variant/50 mb-4">How your discourse is being positioned rhetorically</p>
+        <div id="framing-body" class="space-y-3"></div>
+      </div>
+
+    </div>
+
+    <!-- ── Analyst Signal Card ── -->
+    <div class="bg-surface-container rounded-2xl p-6 border border-primary/10 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-primary/3 to-transparent pointer-events-none"></div>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+        <p class="text-[10px] uppercase tracking-widest font-black text-primary">Analyst Signal</p>
+      </div>
+      <div id="analyst-signal" class="text-sm text-on-surface-variant leading-relaxed">
+        <div class="h-4 bg-surface-container-high rounded animate-pulse w-3/4 mb-2"></div>
+        <div class="h-4 bg-surface-container-high rounded animate-pulse w-1/2"></div>
+      </div>
+    </div>
+
+    <!-- ── Per-Tweet Oracle Cards ── -->
+    <div>
+      <p class="text-[10px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-4">Post-Level Oracle Analysis</p>
+      <div id="tweet-analyses" class="space-y-4">
+        <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10 animate-pulse h-32"></div>
+        <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant/10 animate-pulse h-32"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+  // ── Utilities ──────────────────────────────────────────────────────────────
+  const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
+  const fmtNum = n => n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n);
+  const sentimentIcon = { neutral:'balance', analytical:'analytics', hopeful:'sentiment_satisfied', alarmist:'warning', angry:'sentiment_very_dissatisfied', sarcastic:'theater_comedy' };
+  const discourseIcon = { geopolitical:'public', economic:'trending_up', social:'groups', technology:'memory', cultural:'museum', other:'category' };
+
+  function barRow(label, count, total, colorClass) {
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    return `
+      <div>
+        <div class="flex justify-between mb-1">
+          <span class="text-[11px] text-on-surface-variant">${label}</span>
+          <span class="text-[11px] font-bold text-on-surface">${count}</span>
+        </div>
+        <div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+          <div class="h-full ${colorClass} rounded-full bar-fill" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  }
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  const results = []; // { tweet, analysis }
+  let pending = 0;
+
+  fetch('/api/me').then(r => r.json()).then(u => {
+    document.getElementById('user-name').textContent = u.name ?? '—';
+    document.getElementById('user-handle').textContent = '@' + (u.username ?? '—');
+  }).catch(() => {});
+
+  // ── Load & Analyze ─────────────────────────────────────────────────────────
+  fetch('/api/feed')
+    .then(r => r.json())
+    .then(tweets => {
+      if (!tweets.length) {
+        document.getElementById('tweet-analyses').innerHTML = '<p class="text-sm text-on-surface-variant">No posts found.</p>';
+        return;
+      }
+      document.getElementById('analysis-status').textContent = `Analyzing ${tweets.length} posts…`;
+      pending = tweets.length;
+      tweets.forEach(t => analyzePost(t));
+    })
+    .catch(() => {
+      document.getElementById('tweet-analyses').innerHTML = '<p class="text-sm text-on-surface-variant">Could not load posts.</p>';
+    });
+
+  function analyzePost(tweet) {
+    const url = `/api/feed/analyze-tweet?tweet_id=${tweet.id}&tweet_text=${encodeURIComponent(tweet.text)}`;
+    const src = new EventSource(url);
+    src.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.type === 'complete') {
+        src.close();
+        results.push({ tweet, analysis: data });
+        pending--;
+        document.getElementById('analysis-status').textContent = pending > 0 ? `Analyzing ${pending} remaining…` : 'Analysis complete';
+        renderAll();
+      }
+    };
+    src.onerror = () => { src.close(); pending--; };
+  }
+
+  // ── Render Everything ──────────────────────────────────────────────────────
+  function renderAll() {
+    const debatable = results.filter(r => r.analysis.debatable);
+
+    // ── KPIs ──
+    const total = results.length;
+    const avgBias = total ? Math.round(results.reduce((s,r) => s + (r.analysis.bias_score ?? 50), 0) / total) : 0;
+    const biasLabel = avgBias < 20 ? 'Neutral' : avgBias < 40 ? 'Slight' : avgBias < 65 ? 'Moderate' : 'Strong';
+    const biasColor = avgBias < 30 ? 'text-emerald-400' : avgBias < 55 ? 'text-primary' : 'text-error';
+    const highEcho = results.filter(r => r.analysis.echo_chamber_risk === 'high').length;
+    const totalEng = debatable.reduce((s,r) => s + (r.analysis.total_engagement ?? 0), 0);
+
+    document.getElementById('kpi-row').innerHTML = `
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10">
+        <p class="text-[9px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-2">Posts Analyzed</p>
+        <p class="text-3xl font-black text-on-surface">${total}</p>
+        <p class="text-[10px] text-on-surface-variant/50 mt-1">${debatable.length} debatable</p>
+      </div>
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10">
+        <p class="text-[9px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-2">Avg Bias Score</p>
+        <p class="text-3xl font-black ${biasColor}">${avgBias}%</p>
+        <p class="text-[10px] text-on-surface-variant/50 mt-1">${biasLabel} bias</p>
+      </div>
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10">
+        <p class="text-[9px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-2">High Echo Risk</p>
+        <p class="text-3xl font-black ${highEcho > 0 ? 'text-error' : 'text-emerald-400'}">${highEcho}</p>
+        <p class="text-[10px] text-on-surface-variant/50 mt-1">of ${total} posts</p>
+      </div>
+      <div class="bg-surface-container rounded-2xl p-5 border border-outline-variant/10">
+        <p class="text-[9px] uppercase tracking-widest font-black text-on-surface-variant/50 mb-2">Total Engagement</p>
+        <p class="text-3xl font-black text-on-surface">${fmtNum(totalEng)}</p>
+        <p class="text-[10px] text-on-surface-variant/50 mt-1">across viewpoints</p>
+      </div>`;
+
+    // ── Bias Distribution ──
+    const biasGroups = { Neutral: 0, Slight: 0, Moderate: 0, Strong: 0 };
+    results.forEach(r => {
+      const b = r.analysis.bias_score ?? 50;
+      if (b < 20) biasGroups.Neutral++; else if (b < 40) biasGroups.Slight++; else if (b < 65) biasGroups.Moderate++; else biasGroups.Strong++;
+    });
+    document.getElementById('chart-bias').innerHTML = [
+      barRow('Neutral', biasGroups.Neutral, total, 'bg-emerald-500'),
+      barRow('Slight', biasGroups.Slight, total, 'bg-primary'),
+      barRow('Moderate', biasGroups.Moderate, total, 'bg-amber-400'),
+      barRow('Strong', biasGroups.Strong, total, 'bg-error'),
+    ].join('');
+
+    // ── Sentiment ──
+    const sentCounts = {};
+    results.forEach(r => { const s = r.analysis.sentiment ?? 'neutral'; sentCounts[s] = (sentCounts[s] || 0) + 1; });
+    const sentColors = { neutral:'bg-on-surface-variant', analytical:'bg-primary', hopeful:'bg-emerald-500', alarmist:'bg-amber-400', angry:'bg-error', sarcastic:'bg-secondary' };
+    document.getElementById('chart-sentiment').innerHTML = Object.entries(sentCounts)
+      .sort((a,b) => b[1]-a[1])
+      .map(([k,v]) => barRow(cap(k), v, total, sentColors[k] ?? 'bg-on-surface-variant'))
+      .join('');
+
+    // ── Discourse Types ──
+    const discCounts = {};
+    results.forEach(r => { const d = r.analysis.discourse_type ?? 'other'; discCounts[d] = (discCounts[d] || 0) + 1; });
+    const discColors = { geopolitical:'bg-primary', economic:'bg-emerald-500', social:'bg-secondary', technology:'bg-amber-400', cultural:'bg-tertiary', other:'bg-outline' };
+    document.getElementById('chart-discourse').innerHTML = Object.entries(discCounts)
+      .sort((a,b) => b[1]-a[1])
+      .map(([k,v]) => barRow(cap(k), v, total, discColors[k] ?? 'bg-outline'))
+      .join('');
+
+    // ── Polarization Index ──
+    const polarizationColor = avgBias < 30 ? 'bg-emerald-500' : avgBias < 55 ? 'bg-primary' : 'bg-error';
+    const polarLabel = avgBias < 20 ? 'Your discourse is largely balanced and non-partisan.' :
+                       avgBias < 40 ? 'Slight partisan lean detected — some framing bias present.' :
+                       avgBias < 65 ? 'Moderate polarization. Narratives show consistent directional framing.' :
+                       'High polarization. Content is strongly one-sided — echo chamber risk elevated.';
+    document.getElementById('polarization-body').innerHTML = `
+      <div class="flex items-end gap-3 mb-2">
+        <span class="text-5xl font-black ${avgBias < 30 ? 'text-emerald-400' : avgBias < 55 ? 'text-primary' : 'text-error'}">${avgBias}</span>
+        <span class="text-on-surface-variant/50 text-sm mb-1">/ 100</span>
+      </div>
+      <div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden mb-3">
+        <div class="h-full ${polarizationColor} rounded-full bar-fill" style="width:${avgBias}%"></div>
+      </div>
+      <p class="text-[12px] text-on-surface-variant leading-relaxed">${polarLabel}</p>`;
+
+    // ── Echo Chamber ──
+    const echoCounts = { low: 0, medium: 0, high: 0 };
+    results.forEach(r => { const e = r.analysis.echo_chamber_risk; if (e) echoCounts[e]++; });
+    const echoTotal = Object.values(echoCounts).reduce((a,b) => a+b, 0);
+    document.getElementById('echo-body').innerHTML = `
+      <div class="flex gap-2 mb-3">
+        ${[['low','bg-emerald-500','text-emerald-400'],['medium','bg-amber-400','text-amber-400'],['high','bg-error','text-error']].map(([k,bg,tc]) => `
+          <div class="flex-1 bg-surface-container-high rounded-xl p-3 text-center">
+            <p class="text-xl font-black ${tc}">${echoCounts[k]}</p>
+            <p class="text-[9px] uppercase tracking-widest text-on-surface-variant/50 mt-1">${cap(k)}</p>
+          </div>`).join('')}
+      </div>
+      <div class="flex h-2 rounded-full overflow-hidden gap-px">
+        <div class="bg-emerald-500 bar-fill" style="width:${echoTotal?Math.round(echoCounts.low/echoTotal*100):33}%"></div>
+        <div class="bg-amber-400 bar-fill" style="width:${echoTotal?Math.round(echoCounts.medium/echoTotal*100):33}%"></div>
+        <div class="bg-error bar-fill" style="width:${echoTotal?Math.round(echoCounts.high/echoTotal*100):34}%"></div>
+      </div>`;
+
+    // ── Viewpoint Dominance ──
+    let totalA = 0, totalB = 0;
+    let labelA = 'Viewpoint A', labelB = 'Viewpoint B';
+    debatable.forEach(r => {
+      const eng = r.analysis.total_engagement ?? 0;
+      const bal = r.analysis.viewpoint_balance ?? 50;
+      totalA += Math.round(eng * bal / 100);
+      totalB += Math.round(eng * (100 - bal) / 100);
+      if (r.analysis.viewpoint_a_label) labelA = r.analysis.viewpoint_a_label;
+      if (r.analysis.viewpoint_b_label) labelB = r.analysis.viewpoint_b_label;
+    });
+    const grandTotal = totalA + totalB;
+    const pctA = grandTotal ? Math.round(totalA / grandTotal * 100) : 50;
+    const pctB = 100 - pctA;
+    document.getElementById('viewpoint-body').innerHTML = grandTotal > 0 ? `
+      <div class="flex justify-between text-[10px] font-bold mb-1.5">
+        <span class="text-primary truncate max-w-[45%]">${labelA}</span>
+        <span class="text-error truncate max-w-[45%] text-right">${labelB}</span>
+      </div>
+      <div class="flex h-3 rounded-full overflow-hidden mb-2">
+        <div class="bg-primary bar-fill" style="width:${pctA}%"></div>
+        <div class="bg-error bar-fill" style="width:${pctB}%"></div>
+      </div>
+      <div class="flex justify-between text-[11px] font-black">
+        <span class="text-primary">${pctA}% · ${fmtNum(totalA)}</span>
+        <span class="text-error">${pctB}% · ${fmtNum(totalB)}</span>
+      </div>` : '<p class="text-[11px] text-on-surface-variant/50">Not enough debatable posts yet.</p>';
+
+    // ── Framing Patterns ──
+    const frameCounts = {};
+    results.forEach(r => { const f = r.analysis.framing; if (f) frameCounts[f] = (frameCounts[f] || 0) + 1; });
+    const frameColors = { question:'bg-primary', declarative:'bg-on-surface-variant', emotional:'bg-error', satirical:'bg-amber-400', informational:'bg-emerald-500' };
+    document.getElementById('framing-body').innerHTML = Object.entries(frameCounts).length
+      ? Object.entries(frameCounts).sort((a,b)=>b[1]-a[1]).map(([k,v]) => barRow(cap(k), v, total, frameColors[k] ?? 'bg-outline')).join('')
+      : '<p class="text-[11px] text-on-surface-variant/50">Loading…</p>';
+
+    // ── Analyst Signal ──
+    const dominant = Object.entries(sentCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] ?? 'neutral';
+    const topDisc = Object.entries(discCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] ?? 'other';
+    const signals = [];
+    if (avgBias >= 65) signals.push(`Your posts carry a <strong class="text-error">high polarization index of ${avgBias}%</strong> — content is consistently one-sided. This increases susceptibility to algorithmic amplification within partisan bubbles.`);
+    else if (avgBias >= 40) signals.push(`Moderate bias detected at <strong class="text-amber-400">${avgBias}%</strong>. Framing leans directional but retains some balance. Consider diversifying cited perspectives.`);
+    else signals.push(`Bias score is <strong class="text-emerald-400">${avgBias}%</strong> — relatively balanced discourse. Posts are unlikely to be flagged for partisan amplification.`);
+    if (echoCounts.high > 0) signals.push(`<strong class="text-error">${echoCounts.high} post${echoCounts.high > 1 ? 's' : ''}</strong> carry high echo-chamber risk. These are likely reaching only like-minded audiences, reducing cross-partisan exposure.`);
+    if (dominant === 'angry' || dominant === 'alarmist') signals.push(`Dominant sentiment is <strong class="text-error">${dominant}</strong> — emotionally charged discourse tends to spread faster but invites reactive opposition rather than reasoned debate.`);
+    if (topDisc === 'geopolitical') signals.push(`${cap(topDisc)} discourse dominates your posts. This category sees the highest polarization rates across social platforms.`);
+    document.getElementById('analyst-signal').innerHTML = signals.map(s => `<p class="mb-2">${s}</p>`).join('');
+
+    // ── Per-Tweet Cards ──
+    document.getElementById('tweet-analyses').innerHTML = results.map(({ tweet, analysis }) => {
+      const bs = analysis.bias_score ?? 50;
+      const bColor = bs < 30 ? 'text-emerald-400' : bs < 55 ? 'text-primary' : 'text-error';
+      const bBar = bs < 30 ? 'bg-emerald-500' : bs < 55 ? 'bg-primary' : 'bg-error';
+      const eColor = { low:'text-emerald-400', medium:'text-amber-400', high:'text-error' }[analysis.echo_chamber_risk] ?? 'text-on-surface-variant';
+      const pctA = analysis.viewpoint_balance ?? 50;
+      const pctB = 100 - pctA;
+      return `
+        <div class="bg-surface-container rounded-2xl border border-outline-variant/10 overflow-hidden">
+          <div class="p-5 cursor-pointer hover:bg-surface-container-high/50 transition-colors" onclick="window.location='/dashboard/${tweet.id}'">
+            <p class="text-[13px] leading-relaxed text-on-surface">${tweet.text}</p>
+            <p class="text-[10px] text-on-surface-variant/50 mt-1">@${tweet.author?.username ?? '?'}</p>
+          </div>
+          ${analysis.debatable ? `
+          <div class="px-5 pb-5 pt-0 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-outline-variant/10">
+            <div>
+              <p class="text-[9px] uppercase tracking-widest text-on-surface-variant/40 mb-1">Bias</p>
+              <p class="text-lg font-black ${bColor}">${bs}%</p>
+              <div class="h-1 bg-surface-container-high rounded-full mt-1 overflow-hidden">
+                <div class="h-full ${bBar} rounded-full" style="width:${bs}%"></div>
+              </div>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-widest text-on-surface-variant/40 mb-1">Sentiment</p>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="material-symbols-outlined text-sm text-on-surface-variant">${sentimentIcon[analysis.sentiment] ?? 'help'}</span>
+                <span class="text-sm font-bold">${cap(analysis.sentiment)}</span>
+              </div>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-widest text-on-surface-variant/40 mb-1">Echo Risk</p>
+              <p class="text-sm font-black ${eColor} mt-1">${cap(analysis.echo_chamber_risk)}</p>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-widest text-on-surface-variant/40 mb-1">Discourse</p>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="material-symbols-outlined text-sm text-on-surface-variant">${discourseIcon[analysis.discourse_type] ?? 'category'}</span>
+                <span class="text-sm font-bold">${cap(analysis.discourse_type)}</span>
+              </div>
+            </div>
+          </div>
+          ${analysis.total_engagement > 0 ? `
+          <div class="px-5 pb-4 border-t border-outline-variant/10">
+            <div class="flex justify-between text-[9px] font-bold mb-1 mt-3">
+              <span class="text-primary truncate max-w-[45%]">${analysis.viewpoint_a_label ?? 'Pro'}</span>
+              <span class="text-[9px] text-on-surface-variant/40">${fmtNum(analysis.total_engagement)} engagements</span>
+              <span class="text-error truncate max-w-[45%] text-right">${analysis.viewpoint_b_label ?? 'Con'}</span>
+            </div>
+            <div class="flex h-1.5 rounded-full overflow-hidden">
+              <div class="bg-primary" style="width:${pctA}%"></div>
+              <div class="bg-error" style="width:${pctB}%"></div>
+            </div>
+          </div>` : ''}
+          ` : `<div class="px-5 pb-4 border-t border-outline-variant/10 pt-3">
+            <p class="text-[11px] text-on-surface-variant/40">Non-debatable post — no competing viewpoints detected.</p>
+          </div>`}
+        </div>`;
+    }).join('');
+  }
+</script>
+</body></html>

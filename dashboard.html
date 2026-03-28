@@ -76,6 +76,7 @@
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .glass-panel { background: rgba(48, 53, 59, 0.7); backdrop-filter: blur(20px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="antialiased selection:bg-primary-container selection:text-on-primary-container">
@@ -91,7 +92,7 @@
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
 <span>Home</span>
 </a>
-<a class="flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-200 text-[#BFC7D3] opacity-70 hover:opacity-100 hover:bg-[#252A30]" href="#">
+<a class="flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-200 text-[#BFC7D3] opacity-70 hover:opacity-100 hover:bg-[#252A30]" href="/analytics">
 <span class="material-symbols-outlined">analytics</span>
 <span>Analytics</span>
 </a>
@@ -137,7 +138,7 @@
 </header>
 <div class="flex-1 flex overflow-hidden">
 <!-- Center Feed -->
-<section class="flex-1 overflow-y-auto no-scrollbar max-w-2xl mx-auto px-4 py-8 space-y-8">
+<section class="flex-1 overflow-y-auto no-scrollbar max-w-2xl mx-auto px-4 py-8 space-y-6">
 <div class="flex items-center justify-between mb-2">
   <span class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Your Posts</span>
   <button onclick="loadFeed()" class="flex items-center gap-1 text-xs text-primary hover:underline">
@@ -151,81 +152,6 @@
   </div>
 </div>
 </section>
-<!-- Right Column: Predictive Panel -->
-<aside class="hidden xl:flex flex-col w-[380px] shrink-0 border-l border-outline-variant/10 p-6 space-y-6 overflow-y-auto no-scrollbar">
-<!-- Upcoming Events Card -->
-<div class="bg-surface-container rounded-xl p-5 border border-outline-variant/10">
-<h3 class="text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant mb-4">Upcoming Events</h3>
-<div class="space-y-4">
-<div class="flex justify-between items-center">
-<div class="flex flex-col">
-<span class="text-sm font-semibold">Economic Shift</span>
-<span class="text-[10px] text-on-surface-variant">Market volatility predicted</span>
-</div>
-<span class="text-primary font-black text-lg">68%</span>
-</div>
-<div class="flex justify-between items-center">
-<div class="flex flex-col">
-<span class="text-sm font-semibold">Regulatory Update</span>
-<span class="text-[10px] text-on-surface-variant">EU Data Directive 4.0</span>
-</div>
-<span class="text-on-surface-variant font-black text-lg">42%</span>
-</div>
-<div class="flex justify-between items-center">
-<div class="flex flex-col">
-<span class="text-sm font-semibold">Tech Breakthrough</span>
-<span class="text-[10px] text-on-surface-variant">Room-temp superconductors</span>
-</div>
-<span class="text-primary font-black text-lg">15%</span>
-</div>
-</div>
-</div>
-<!-- Multimodal Insights -->
-<div class="bg-surface-container rounded-xl p-5 border border-outline-variant/10">
-<h3 class="text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant mb-4">Multimodal Insights</h3>
-<!-- Chart placeholder -->
-<div class="aspect-video w-full rounded-lg overflow-hidden relative mb-4 bg-surface-container-high flex items-end p-3 gap-1">
-<div class="flex-1 bg-primary/30 rounded-t-sm" style="height: 30%"></div>
-<div class="flex-1 bg-primary/40 rounded-t-sm" style="height: 45%"></div>
-<div class="flex-1 bg-primary/50 rounded-t-sm" style="height: 55%"></div>
-<div class="flex-1 bg-primary/70 rounded-t-sm" style="height: 70%"></div>
-<div class="flex-1 bg-primary/80 rounded-t-sm" style="height: 80%"></div>
-<div class="flex-1 bg-primary rounded-t-sm" style="height: 95%"></div>
-<div class="flex-1 bg-primary/80 rounded-t-sm" style="height: 75%"></div>
-<div class="flex-1 bg-primary/60 rounded-t-sm" style="height: 60%"></div>
-<div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
-<span class="text-[10px] bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full font-bold">Trending: Neural Nodes</span>
-</div>
-</div>
-<p class="text-xs leading-relaxed text-on-surface-variant">
-  Cross-platform discourse indicates a 40% surge in discussions regarding <span class="text-primary">autonomous infrastructure</span>, primarily driven by visual data from industrial sectors.
-</p>
-</div>
-<!-- Discourse Neutrality Chart -->
-<div class="bg-surface-container-high rounded-xl p-5 border border-outline-variant/20 shadow-xl">
-<div class="flex justify-between items-center mb-6">
-<h3 class="text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant">Discourse Neutrality</h3>
-<span class="text-[10px] font-bold text-primary">Live Update</span>
-</div>
-<div class="h-32 flex items-end gap-1 px-1">
-<div class="flex-1 bg-surface-variant/30 h-[40%] rounded-t-sm"></div>
-<div class="flex-1 bg-surface-variant/30 h-[55%] rounded-t-sm"></div>
-<div class="flex-1 bg-primary/60 h-[70%] rounded-t-sm"></div>
-<div class="flex-1 bg-primary/40 h-[60%] rounded-t-sm"></div>
-<div class="flex-1 bg-surface-variant/30 h-[45%] rounded-t-sm"></div>
-<div class="flex-1 bg-primary/80 h-[85%] rounded-t-sm"></div>
-<div class="flex-1 bg-primary/90 h-[95%] rounded-t-sm"></div>
-<div class="flex-1 bg-primary h-[80%] rounded-t-sm"></div>
-<div class="flex-1 bg-surface-variant/30 h-[50%] rounded-t-sm"></div>
-<div class="flex-1 bg-surface-variant/30 h-[40%] rounded-t-sm"></div>
-</div>
-<div class="mt-4 flex justify-between text-[9px] font-bold text-on-surface-variant tracking-widest uppercase">
-<span>00:00</span>
-<span>Current Phase</span>
-<span>24:00</span>
-</div>
-</div>
-</aside>
 </div>
 <!-- Footer -->
 <footer class="w-full py-8 mt-auto border-t border-[#3F4851]/10 flex flex-col items-center justify-center gap-4 text-center">
@@ -240,7 +166,6 @@
 </main>
 </div>
 <script>
-  // Populate sidebar user info
   fetch('/api/me')
     .then(res => {
       if (res.status === 401) { window.location.href = '/'; return null; }
@@ -252,17 +177,6 @@
       document.getElementById('user-handle').textContent = '@' + user.username;
     });
 
-  // Helpers for Oracle Analysis placeholders
-  function biasLabel(pct) {
-    if (pct < 20) return 'Low';
-    if (pct < 50) return 'Medium';
-    return 'High';
-  }
-  function sentimentLabel(pct) {
-    if (pct > 70) return 'Neutral';
-    if (pct > 40) return 'Mixed';
-    return 'Alarmist';
-  }
   function timeAgo(iso) {
     if (!iso) return '';
     const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
@@ -273,131 +187,196 @@
 
   function fmtNum(n) {
     if (!n && n !== 0) return '';
-    return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : n;
+    return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
+  }
+
+  function cap(s) {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
   }
 
   function renderThreadCard(thread) {
     const { root, replies } = thread;
     const author = root.author ?? {};
     const avatar = author.profile_image_url
-      ? `<img src="${author.profile_image_url}" class="w-8 h-8 rounded-full object-cover" alt="">`
-      : `<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-xs text-on-surface-variant" style="font-variation-settings:'FILL' 1">person</span></div>`;
+      ? `<img src="${author.profile_image_url}" class="w-8 h-8 rounded-full object-cover flex-shrink-0" alt="">`
+      : `<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-xs text-on-surface-variant" style="font-variation-settings:'FILL' 1">person</span></div>`;
     const replySnippets = (replies ?? []).slice(0, 2).map(r =>
-      `<p class="text-[12px] text-on-surface-variant leading-relaxed pl-3 border-l border-outline-variant/20 mt-2">${r.text.slice(0, 120)}${r.text.length > 120 ? '…' : ''}</p>`
+      `<p class="text-[11px] text-on-surface-variant leading-relaxed pl-3 border-l-2 border-outline-variant/20 mt-2 italic">${r.text.slice(0, 100)}${r.text.length > 100 ? '…' : ''}</p>`
     ).join('');
+    const media = root.media;
+    const mediaHtml = media?.type === 'video'
+      ? `<video src="${media.url}" ${media.preview ? `poster="${media.preview}"` : ''} autoplay muted loop playsinline class="w-full rounded-lg mt-2 max-h-48 object-cover" style="background:#000"></video>`
+      : media?.type === 'photo'
+      ? `<img src="${media.url}" class="w-full rounded-lg mt-2 max-h-48 object-cover" alt="" loading="lazy">`
+      : '';
+    const tweetUrl = root.id && author.username
+      ? `https://x.com/${author.username}/status/${root.id}`
+      : null;
     return `
-      <div class="bg-surface-container rounded-lg p-4 border border-outline-variant/10">
+      <div class="bg-surface-container rounded-xl px-4 py-3 border border-outline-variant/10 hover:border-outline-variant/30 transition-colors">
         <div class="flex items-start gap-2 mb-2">
           ${avatar}
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-1 flex-wrap">
               <span class="text-xs font-bold truncate">${author.name ?? 'Unknown'}</span>
-              <span class="text-on-surface-variant text-[11px]">@${author.username ?? '?'}</span>
+              <span class="text-on-surface-variant text-[10px]">@${author.username ?? '?'}</span>
             </div>
-            <p class="text-[13px] leading-relaxed mt-1">${root.text}</p>
+            <p class="text-[12px] leading-snug mt-1 text-on-surface">${root.text}</p>
+            ${mediaHtml}
           </div>
         </div>
         ${replySnippets}
-        <div class="flex items-center gap-3 mt-2 pt-2 border-t border-outline-variant/10">
-          <span class="flex items-center gap-1 text-[11px] text-on-surface-variant">
+        <div class="flex items-center gap-4 mt-2 pt-2 border-t border-outline-variant/10">
+          <span class="flex items-center gap-1 text-[10px] text-on-surface-variant">
             <span class="material-symbols-outlined text-xs">favorite</span>${fmtNum(root.public_metrics?.like_count ?? 0)}
           </span>
-          <span class="flex items-center gap-1 text-[11px] text-on-surface-variant">
+          <span class="flex items-center gap-1 text-[10px] text-on-surface-variant">
             <span class="material-symbols-outlined text-xs">repeat</span>${fmtNum(root.public_metrics?.retweet_count ?? 0)}
           </span>
+          <span class="flex items-center gap-1 text-[10px] text-on-surface-variant">
+            <span class="material-symbols-outlined text-xs">chat_bubble</span>${fmtNum(root.public_metrics?.reply_count ?? 0)}
+          </span>
+          ${tweetUrl ? `<a href="${tweetUrl}" target="_blank" rel="noopener noreferrer"
+              class="ml-auto flex items-center gap-1 text-[10px] text-on-surface-variant/40 hover:text-primary transition-colors" title="Open on X">
+              <span class="material-symbols-outlined text-xs">open_in_new</span>
+            </a>` : ''}
         </div>
       </div>`;
   }
 
-  function renderViewpointSection(data, tweetId) {
-    const el = document.getElementById('viewpoints-' + tweetId);
+  function renderOracleSection(data, tweetId) {
+    const wrapper = document.getElementById('oracle-body-' + tweetId) || document.getElementById('oracle-' + tweetId);
+    const el = document.getElementById('oracle-body-' + tweetId) || wrapper;
     if (!el) return;
-    if (!data.debatable) { el.remove(); return; }
+
+    if (!data.debatable) {
+      el.innerHTML = `
+        <div class="mt-6 pt-6 border-t border-outline-variant/10 flex items-center gap-2 text-on-surface-variant/50">
+          <span class="material-symbols-outlined text-sm">info</span>
+          <span class="text-[11px]">No competing viewpoints detected for this post.</span>
+        </div>`;
+      return;
+    }
+
+    const threadsA = (data.viewpoint_a_threads ?? []).map(renderThreadCard).join('') || '<p class="text-[11px] text-on-surface-variant/60 py-2">No threads found.</p>';
+    const threadsB = (data.viewpoint_b_threads ?? []).map(renderThreadCard).join('') || '<p class="text-[11px] text-on-surface-variant/60 py-2">No threads found.</p>';
 
     el.innerHTML = `
-      <div class="mt-5 pt-5 border-t border-outline-variant/10">
-        <div class="flex items-center gap-2 mb-4">
+      <div class="mt-6 pt-6 border-t border-outline-variant/10">
+        <div class="flex items-center gap-2 mb-3">
           <span class="material-symbols-outlined text-primary-container text-sm" style="font-variation-settings:'FILL' 1">compare_arrows</span>
-          <span class="text-[10px] uppercase font-bold tracking-widest text-primary-container">Oracle Viewpoints</span>
+          <span class="text-[10px] uppercase font-black tracking-widest text-primary-container">Oracle Viewpoints</span>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <p class="text-[10px] uppercase tracking-widest font-bold text-primary mb-2">${data.viewpoint_a_label}</p>
-            <div class="space-y-2">${(data.viewpoint_a_threads ?? []).map(renderThreadCard).join('') || '<p class="text-xs text-on-surface-variant">No threads found.</p>'}</div>
+            <p class="text-[10px] uppercase tracking-widest font-black text-primary mb-2">${data.viewpoint_a_label}</p>
+            <div class="space-y-2">${threadsA}</div>
           </div>
           <div>
-            <p class="text-[10px] uppercase tracking-widest font-bold text-error mb-2">${data.viewpoint_b_label}</p>
-            <div class="space-y-2">${(data.viewpoint_b_threads ?? []).map(renderThreadCard).join('') || '<p class="text-xs text-on-surface-variant">No threads found.</p>'}</div>
+            <p class="text-[10px] uppercase tracking-widest font-black text-error mb-2">${data.viewpoint_b_label}</p>
+            <div class="space-y-2">${threadsB}</div>
           </div>
         </div>
       </div>`;
+  }
+
+  function setOracleProgress(tweetId, pct, message) {
+    const bar = document.getElementById('oracle-bar-' + tweetId);
+    const msg = document.getElementById('oracle-msg-' + tweetId);
+    const pctEl = document.getElementById('oracle-pct-' + tweetId);
+    if (bar) bar.style.width = pct + '%';
+    if (msg) msg.textContent = message;
+    if (pctEl) pctEl.textContent = pct + '%';
   }
 
   function analyzeTweet(tweetId, tweetText) {
-    fetch('/api/feed/analyze-tweet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tweet_text: tweetText }),
-    })
-      .then(r => r.json())
-      .then(data => renderViewpointSection(data, tweetId))
-      .catch(() => {
-        const el = document.getElementById('viewpoints-' + tweetId);
-        if (el) el.remove();
-      });
+    // Auto-expand oracle section and show progress bar
+    const wrapper = document.getElementById('oracle-' + tweetId);
+    const icon = document.getElementById('oracle-toggle-icon-' + tweetId);
+    if (wrapper) wrapper.style.display = '';
+    if (icon) icon.textContent = 'expand_less';
+
+    const body = document.getElementById('oracle-body-' + tweetId);
+    if (body) body.innerHTML = `
+      <div class="mt-6 pt-6 border-t border-outline-variant/10">
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[11px] text-on-surface-variant" id="oracle-msg-${tweetId}">Starting analysis…</span>
+            <span class="text-[10px] font-bold text-primary" id="oracle-pct-${tweetId}">0%</span>
+          </div>
+          <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+            <div id="oracle-bar-${tweetId}" class="h-full bg-primary rounded-full transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+      </div>`;
+
+    const params = new URLSearchParams({ tweet_id: tweetId, tweet_text: tweetText });
+    const source = new EventSource(`/api/feed/analyze-tweet?${params}`);
+
+    source.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.type === 'progress') {
+        setOracleProgress(tweetId, data.pct, data.message);
+      } else if (data.type === 'complete') {
+        source.close();
+        setOracleProgress(tweetId, 100, 'Done');
+        setTimeout(() => renderOracleSection(data, tweetId), 300);
+      } else if (data.type === 'error') {
+        source.close();
+        const el = document.getElementById('oracle-body-' + tweetId);
+        if (el) el.innerHTML = `<p class="text-[11px] text-on-surface-variant/50 mt-6 pt-6 border-t border-outline-variant/10">${data.message}</p>`;
+      }
+    };
+
+    source.onerror = () => {
+      source.close();
+      const el = document.getElementById('oracle-body-' + tweetId);
+      if (el) el.innerHTML = '<p class="text-[11px] text-on-surface-variant/50 mt-6 pt-6 border-t border-outline-variant/10">Oracle analysis unavailable right now.</p>';
+    };
+  }
+
+  function toggleOracle(tweetId) {
+    const body = document.getElementById('oracle-body-' + tweetId);
+    const icon = document.getElementById('oracle-toggle-icon-' + tweetId);
+    const expanded = body.style.display !== 'none';
+    body.style.display = expanded ? 'none' : '';
+    icon.textContent = expanded ? 'expand_more' : 'expand_less';
+  }
+
+  const tweetCache = {};
+
+  function goToTweet(id) {
+    const tweet = tweetCache[id];
+    if (!tweet) return;
+    sessionStorage.setItem('tweet_' + id, JSON.stringify(tweet));
+    window.location.href = '/dashboard/' + id;
   }
 
   function renderCard(tweet) {
-    const bias = Math.floor(Math.random() * 60) + 5;
-    const sentiment = Math.floor(Math.random() * 80) + 10;
-    const sentColor = sentiment > 70 ? 'bg-tertiary' : sentiment > 40 ? 'bg-primary/60' : 'bg-error';
+    tweetCache[tweet.id] = tweet;
+    const avatarHtml = tweet.author.profile_image_url
+      ? `<img src="${tweet.author.profile_image_url}" class="w-12 h-12 rounded-full object-cover" alt="${tweet.author.name}">`
+      : `<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings:'FILL' 1">person</span>`;
     return `
-      <div class="bg-surface-container-low rounded-xl p-6 transition-all border border-transparent hover:border-outline-variant/10" data-tweet-id="${tweet.id}" data-tweet-text="${encodeURIComponent(tweet.text)}">
-        <div class="flex items-start gap-4 mb-4">
-          <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 overflow-hidden">
-            ${tweet.author.profile_image_url
-              ? `<img src="${tweet.author.profile_image_url}" class="w-full h-full object-cover" alt="${tweet.author.name}">`
-              : `<span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">person</span>`}
+      <div class="bg-surface-container-low rounded-xl p-6 border border-transparent hover:border-outline-variant/10 transition-colors">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 overflow-hidden cursor-pointer" onclick="goToTweet('${tweet.id}')">
+            ${avatarHtml}
           </div>
-          <div class="flex-1">
-            <div class="flex items-center gap-2">
-              <span class="font-bold">${tweet.author.name}</span>
-              <span class="text-on-surface-variant text-sm">@${tweet.author.username} · ${timeAgo(tweet.created_at)}</span>
+          <div class="flex-1 min-w-0 cursor-pointer" onclick="goToTweet('${tweet.id}')">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-bold text-sm">${tweet.author.name}</span>
+              <span class="text-on-surface-variant text-[13px]">@${tweet.author.username} · ${timeAgo(tweet.created_at)}</span>
             </div>
             <p class="mt-2 text-[15px] leading-relaxed">${tweet.text}</p>
           </div>
+          <button onclick="event.stopPropagation(); toggleOracle('${tweet.id}')" class="shrink-0 p-1.5 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant hover:text-on-surface" title="Toggle Oracle Analysis">
+            <span class="material-symbols-outlined text-lg" id="oracle-toggle-icon-${tweet.id}">expand_more</span>
+          </button>
         </div>
-        <div class="mt-6 pt-6 border-t border-outline-variant/10">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1">auto_awesome</span>
-            <span class="text-[10px] uppercase font-bold tracking-widest text-primary">Oracle Analysis</span>
-          </div>
-          <div class="grid grid-cols-2 gap-6">
-            <div>
-              <div class="flex justify-between items-end mb-2">
-                <span class="text-xs text-on-surface-variant font-medium">Bias Score</span>
-                <span class="text-xs font-bold text-on-surface">${bias}% (${biasLabel(bias)})</span>
-              </div>
-              <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-                <div class="h-full bg-primary rounded-full" style="width:${bias}%"></div>
-              </div>
-            </div>
-            <div>
-              <div class="flex justify-between items-end mb-2">
-                <span class="text-xs text-on-surface-variant font-medium">Sentiment Probability</span>
-                <span class="text-xs font-bold text-on-surface">${sentiment}% ${sentimentLabel(sentiment)}</span>
-              </div>
-              <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-                <div class="h-full ${sentColor} rounded-full" style="width:${sentiment}%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="viewpoints-${tweet.id}">
-          <div class="mt-5 pt-5 border-t border-outline-variant/10 flex items-center gap-2 text-on-surface-variant">
-            <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
-            <span class="text-[11px]">Oracle analyzing viewpoints…</span>
-          </div>
+        <!-- Oracle section: auto-expanded by analyzeTweet -->
+        <div id="oracle-${tweet.id}" style="display:none">
+          <div id="oracle-body-${tweet.id}"></div>
         </div>
       </div>`;
   }
@@ -416,8 +395,7 @@
           feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">No tweets found.</p>';
           return;
         }
-        feed.innerHTML = tweets.map(renderCard).join('');
-        // Fire async analysis for each tweet
+        feed.innerHTML = `<div class="flex flex-col gap-6">${tweets.map(renderCard).join('')}</div>`;
         tweets.forEach(t => analyzeTweet(t.id, t.text));
       })
       .catch(err => {
@@ -425,8 +403,8 @@
           feed.innerHTML = `
             <div class="flex flex-col items-center gap-4 py-16 text-center max-w-sm mx-auto">
               <span class="material-symbols-outlined text-4xl text-outline">lock</span>
-              <p class="text-sm font-bold text-on-surface">X API upgrade required</p>
-              <p class="text-xs text-on-surface-variant leading-relaxed">Reading tweets requires the X API Basic tier. Upgrade at <a href="https://developer.twitter.com" target="_blank" class="text-primary underline">developer.twitter.com</a>.</p>
+              <p class="text-sm font-bold">X API upgrade required</p>
+              <p class="text-xs text-on-surface-variant leading-relaxed">Upgrade at <a href="https://developer.twitter.com" target="_blank" class="text-primary underline">developer.twitter.com</a>.</p>
             </div>`;
         } else {
           feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">Could not load tweets.</p>';

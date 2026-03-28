@@ -7,9 +7,12 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.100.1",
     "dotenv": "^16",
     "express": "^4",
     "express-session": "^1",
+    "pg": "^8.20.0",
+    "twelvelabs-js": "^1.2.1",
     "twitter-api-v2": "^1"
   }
 }
