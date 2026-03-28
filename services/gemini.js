@@ -49,6 +49,19 @@ Respond with valid JSON only:
 `);
 }
 
+export async function classifyTweetIntent(tweetText) {
+  return ask(`
+You are an intent classifier for a social media research tool.
+
+A user posted this tweet: "${tweetText}"
+
+Determine if this tweet is about a topic that has two distinct, opposing public viewpoints worth researching (e.g. geopolitics, policy debates, economic arguments, social issues, technology disputes).
+
+Respond with valid JSON only:
+{ "debatable": true | false, "reasoning": "one sentence explanation" }
+`);
+}
+
 export async function matchUserTweets(userPrompt, tweets) {
   const tweetList = tweets
     .map(t => `ID:${t.id} TEXT:${t.text.slice(0, 200)}`)

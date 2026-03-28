@@ -4,7 +4,7 @@ import session from 'express-session';
 import { TwitterApi } from 'twitter-api-v2';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { generateViewpoints, matchUserTweets } from './services/gemini.js';
+import { generateViewpoints, matchUserTweets, classifyTweetIntent } from './services/gemini.js';
 import { fetchTopPosts, reconstructThread, fetchUserTweets } from './services/xSearch.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -117,6 +117,48 @@ app.get('/api/feed', async (req, res) => {
       return res.status(402).json({ error: 'X API Basic tier required to read tweets. Upgrade at developer.twitter.com.' });
     }
     res.status(500).json({ error: 'Failed to fetch tweets' });
+  }
+});
+
+// API: analyze a single tweet and return viewpoint threads if debatable
+app.post('/api/feed/analyze-tweet', async (req, res) => {
+  if (!req.session.accessToken) return res.status(401).json({ error: 'Not authenticated' });
+
+  const { tweet_text } = req.body;
+  if (!tweet_text?.trim()) return res.status(400).json({ error: 'tweet_text is required' });
+
+  try {
+    const { debatable } = await classifyTweetIntent(tweet_text);
+    if (!debatable) return res.json({ debatable: false });
+
+    const { viewpoint_a, viewpoint_b } = await generateViewpoints(tweet_text);
+
+    const [postsA, postsB] = await Promise.all([
+      fetchTopPosts(req.session.accessToken, viewpoint_a.query),
+      fetchTopPosts(req.session.accessToken, viewpoint_b.query),
+    ]);
+
+    const [threadsA, threadsB] = await Promise.all([
+      Promise.all(postsA.map(async p => ({
+        root: p,
+        replies: await reconstructThread(req.session.accessToken, p.conversation_id, p.author_id),
+      }))),
+      Promise.all(postsB.map(async p => ({
+        root: p,
+        replies: await reconstructThread(req.session.accessToken, p.conversation_id, p.author_id),
+      }))),
+    ]);
+
+    res.json({
+      debatable: true,
+      viewpoint_a_label: viewpoint_a.label,
+      viewpoint_b_label: viewpoint_b.label,
+      viewpoint_a_threads: threadsA,
+      viewpoint_b_threads: threadsB,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Analysis failed' });
   }
 });
 

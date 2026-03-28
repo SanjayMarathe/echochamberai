@@ -271,12 +271,88 @@
     return Math.floor(diff / 1440) + 'd';
   }
 
+  function fmtNum(n) {
+    if (!n && n !== 0) return '';
+    return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : n;
+  }
+
+  function renderThreadCard(thread) {
+    const { root, replies } = thread;
+    const author = root.author ?? {};
+    const avatar = author.profile_image_url
+      ? `<img src="${author.profile_image_url}" class="w-8 h-8 rounded-full object-cover" alt="">`
+      : `<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-xs text-on-surface-variant" style="font-variation-settings:'FILL' 1">person</span></div>`;
+    const replySnippets = (replies ?? []).slice(0, 2).map(r =>
+      `<p class="text-[12px] text-on-surface-variant leading-relaxed pl-3 border-l border-outline-variant/20 mt-2">${r.text.slice(0, 120)}${r.text.length > 120 ? '…' : ''}</p>`
+    ).join('');
+    return `
+      <div class="bg-surface-container rounded-lg p-4 border border-outline-variant/10">
+        <div class="flex items-start gap-2 mb-2">
+          ${avatar}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1 flex-wrap">
+              <span class="text-xs font-bold truncate">${author.name ?? 'Unknown'}</span>
+              <span class="text-on-surface-variant text-[11px]">@${author.username ?? '?'}</span>
+            </div>
+            <p class="text-[13px] leading-relaxed mt-1">${root.text}</p>
+          </div>
+        </div>
+        ${replySnippets}
+        <div class="flex items-center gap-3 mt-2 pt-2 border-t border-outline-variant/10">
+          <span class="flex items-center gap-1 text-[11px] text-on-surface-variant">
+            <span class="material-symbols-outlined text-xs">favorite</span>${fmtNum(root.public_metrics?.like_count ?? 0)}
+          </span>
+          <span class="flex items-center gap-1 text-[11px] text-on-surface-variant">
+            <span class="material-symbols-outlined text-xs">repeat</span>${fmtNum(root.public_metrics?.retweet_count ?? 0)}
+          </span>
+        </div>
+      </div>`;
+  }
+
+  function renderViewpointSection(data, tweetId) {
+    const el = document.getElementById('viewpoints-' + tweetId);
+    if (!el) return;
+    if (!data.debatable) { el.remove(); return; }
+
+    el.innerHTML = `
+      <div class="mt-5 pt-5 border-t border-outline-variant/10">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-outlined text-primary-container text-sm" style="font-variation-settings:'FILL' 1">compare_arrows</span>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-primary-container">Oracle Viewpoints</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest font-bold text-primary mb-2">${data.viewpoint_a_label}</p>
+            <div class="space-y-2">${(data.viewpoint_a_threads ?? []).map(renderThreadCard).join('') || '<p class="text-xs text-on-surface-variant">No threads found.</p>'}</div>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-widest font-bold text-error mb-2">${data.viewpoint_b_label}</p>
+            <div class="space-y-2">${(data.viewpoint_b_threads ?? []).map(renderThreadCard).join('') || '<p class="text-xs text-on-surface-variant">No threads found.</p>'}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function analyzeTweet(tweetId, tweetText) {
+    fetch('/api/feed/analyze-tweet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tweet_text: tweetText }),
+    })
+      .then(r => r.json())
+      .then(data => renderViewpointSection(data, tweetId))
+      .catch(() => {
+        const el = document.getElementById('viewpoints-' + tweetId);
+        if (el) el.remove();
+      });
+  }
+
   function renderCard(tweet) {
     const bias = Math.floor(Math.random() * 60) + 5;
     const sentiment = Math.floor(Math.random() * 80) + 10;
     const sentColor = sentiment > 70 ? 'bg-tertiary' : sentiment > 40 ? 'bg-primary/60' : 'bg-error';
     return `
-      <div class="bg-surface-container-low rounded-xl p-6 transition-all border border-transparent hover:border-outline-variant/10">
+      <div class="bg-surface-container-low rounded-xl p-6 transition-all border border-transparent hover:border-outline-variant/10" data-tweet-id="${tweet.id}" data-tweet-text="${encodeURIComponent(tweet.text)}">
         <div class="flex items-start gap-4 mb-4">
           <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 overflow-hidden">
             ${tweet.author.profile_image_url
@@ -317,6 +393,12 @@
             </div>
           </div>
         </div>
+        <div id="viewpoints-${tweet.id}">
+          <div class="mt-5 pt-5 border-t border-outline-variant/10 flex items-center gap-2 text-on-surface-variant">
+            <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+            <span class="text-[11px]">Oracle analyzing viewpoints…</span>
+          </div>
+        </div>
       </div>`;
   }
 
@@ -335,6 +417,8 @@
           return;
         }
         feed.innerHTML = tweets.map(renderCard).join('');
+        // Fire async analysis for each tweet
+        tweets.forEach(t => analyzeTweet(t.id, t.text));
       })
       .catch(err => {
         if (err.status === 402) {
