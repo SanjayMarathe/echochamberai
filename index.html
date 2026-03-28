@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EchoChamberAI | The Digital Oracle</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#22323e",
+              "on-tertiary-container": "#2c2e2e",
+              "on-background": "#dee3ea",
+              "surface-dim": "#0f1419",
+              "surface-variant": "#30353b",
+              "error-container": "#93000a",
+              "surface-container-lowest": "#0a0f14",
+              "surface-container-highest": "#30353b",
+              "on-secondary-fixed": "#0c1d28",
+              "surface-tint": "#99cbff",
+              "inverse-on-surface": "#2c3136",
+              "on-tertiary": "#2f3131",
+              "surface-container-low": "#171c21",
+              "secondary": "#b7c9d8",
+              "outline": "#89919d",
+              "outline-variant": "#3f4851",
+              "on-tertiary-fixed-variant": "#454747",
+              "surface": "#0f1419",
+              "on-secondary-container": "#a9bbc9",
+              "error": "#ffb4ab",
+              "surface-container": "#1b2025",
+              "on-primary-fixed-variant": "#004a78",
+              "on-surface-variant": "#bfc7d3",
+              "on-primary": "#003354",
+              "tertiary-container": "#949595",
+              "inverse-primary": "#00629d",
+              "primary-fixed-dim": "#99cbff",
+              "on-error-container": "#ffdad6",
+              "on-tertiary-fixed": "#1a1c1c",
+              "on-surface": "#dee3ea",
+              "tertiary-fixed": "#e2e2e2",
+              "secondary-fixed": "#d3e5f4",
+              "surface-bright": "#353a3f",
+              "primary-fixed": "#cfe5ff",
+              "inverse-surface": "#dee3ea",
+              "on-primary-fixed": "#001d33",
+              "primary": "#99cbff",
+              "on-secondary-fixed-variant": "#384955",
+              "tertiary-fixed-dim": "#c6c6c7",
+              "secondary-container": "#3a4b57",
+              "on-primary-container": "#003050",
+              "primary-container": "#1d9bf0",
+              "secondary-fixed-dim": "#b7c9d8",
+              "tertiary": "#c6c6c7",
+              "on-error": "#690005",
+              "background": "#0f1419",
+              "surface-container-high": "#252a30"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0F1419;
+            color: #DEE3EA;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .oracle-gradient {
+            background: linear-gradient(135deg, rgba(153, 203, 255, 0.05) 0%, rgba(29, 155, 240, 0.05) 100%);
+        }
+        .glass-panel {
+            background: rgba(48, 53, 59, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden selection:bg-primary-container selection:text-white">
+<!-- Background Decoration -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[120px]"></div>
+<div class="absolute top-[40%] -left-[5%] w-[40%] h-[40%] rounded-full bg-primary-container/5 blur-[100px]"></div>
+<div class="absolute inset-0 oracle-gradient opacity-40"></div>
+<!-- Abstract Grid Pattern -->
+<svg class="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="40" id="grid" patternunits="userSpaceOnUse" width="40">
+<path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1"></path>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="100%" width="100%"></rect>
+</svg>
+</div>
+<div class="relative z-10 min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="w-full max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<span class="text-2xl font-black text-[#DEE3EA] tracking-tighter">EchoChamberAI</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">Documentation</a>
+<a class="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">API</a>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center px-6 py-12">
+<div class="w-full max-w-[1200px] grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+<!-- Hero Content Section -->
+<div class="flex flex-col gap-8 order-2 lg:order-1">
+<div class="space-y-4">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-primary">System Online</span>
+</div>
+<h1 class="text-5xl lg:text-7xl font-black text-on-surface tracking-tighter leading-[0.95] max-w-xl">
+  Unbiased Discourse. <br/>
+  <span class="text-primary-container">Predictive Insights.</span>
+</h1>
+</div>
+<div class="space-y-6 max-w-lg">
+<p class="text-lg text-on-surface-variant leading-relaxed font-medium">
+  Step into the Digital Oracle. We synthesize multi-modal social signals to decode the future of discourse before it happens.
+</p>
+<!-- Feature Pills -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+<div class="p-4 rounded-DEFAULT bg-surface-container-low border border-outline-variant/10 flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary">neurology</span>
+<div class="space-y-1">
+<h3 class="text-sm font-bold text-on-surface">Neural Synthesis</h3>
+<p class="text-xs text-on-surface-variant leading-snug">Cross-platform data aggregation for objective truth.</p>
+</div>
+</div>
+<div class="p-4 rounded-DEFAULT bg-surface-container-low border border-outline-variant/10 flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary">query_stats</span>
+<div class="space-y-1">
+<h3 class="text-sm font-bold text-on-surface">Trend Velocity</h3>
+<p class="text-xs text-on-surface-variant leading-snug">Predicting narrative shifts with 94% precision.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sign In Card Section -->
+<div class="order-1 lg:order-2 flex justify-center lg:justify-end">
+<div class="w-full max-w-md p-8 lg:p-10 rounded-lg glass-panel border border-outline-variant/20 shadow-2xl relative overflow-hidden group">
+<!-- Decorative glow inside card -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors duration-700"></div>
+<div class="relative z-10 flex flex-col gap-8">
+<div class="text-center lg:text-left">
+<h2 class="text-2xl font-bold text-on-surface">Access the Chamber</h2>
+<p class="text-sm text-on-surface-variant mt-2">The Oracle awaits your contribution to the predictive engine.</p>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Primary Action: Sign in with X -->
+<a href="dashboard.html" class="w-full h-14 bg-on-surface text-surface font-black rounded-full flex items-center justify-center gap-3 hover:bg-surface-bright hover:text-on-surface transition-all active:scale-[0.98]">
+<svg aria-hidden="true" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+</svg>
+<span>Sign in with X</span>
+</a>
+<div class="flex items-center gap-4 py-2">
+<div class="h-[1px] flex-grow bg-outline-variant/20"></div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">or</span>
+<div class="h-[1px] flex-grow bg-outline-variant/20"></div>
+</div>
+<a href="dashboard.html" class="w-full h-14 bg-surface-container-highest text-on-surface font-bold rounded-full flex items-center justify-center gap-3 hover:bg-surface-variant transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">mail</span>
+<span>Continue with Email</span>
+</a>
+</div>
+<p class="text-[11px] text-on-surface-variant text-center leading-relaxed">
+  By joining the EchoChamberAI, you consent to our
+  <a class="text-primary hover:underline" href="#">Discourse Guidelines</a> and
+  <a class="text-primary hover:underline" href="#">Predictive Analytics Terms</a>.
+</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Footer -->
+<footer class="w-full py-8 mt-auto flex flex-col items-center justify-center gap-4 text-center border-t border-[#3F4851]/10 bg-[#0F1419]">
+<div class="flex gap-6">
+<a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">Privacy</a>
+<a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">Terms</a>
+<a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">API</a>
+<a class="text-[11px] uppercase tracking-widest text-[#BFC7D3] hover:text-[#DEE3EA] underline transition-all" href="#">Discourse Guidelines</a>
+</div>
+<p class="text-[11px] uppercase tracking-widest text-[#BFC7D3]">© 2024 EchoChamberAI. Predictive Discourse Engine.</p>
+</footer>
+</div>
+<!-- Data Pulse Indicator -->
+<div class="fixed top-0 left-0 w-full h-[2px] z-[100] overflow-hidden">
+<div class="h-full bg-gradient-to-r from-transparent via-primary-container to-transparent w-1/2" style="animation: slide 3s infinite linear;"></div>
+</div>
+<style>
+        @keyframes slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+    </style>
+</body></html>
