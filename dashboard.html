@@ -112,8 +112,8 @@
 <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
 </div>
 <div class="overflow-hidden">
-<p class="text-sm font-bold truncate">Oracle_Prime</p>
-<p class="text-xs text-on-surface-variant truncate">@prediction_node</p>
+<p id="user-name" class="text-sm font-bold truncate">Oracle_Prime</p>
+<p id="user-handle" class="text-xs text-on-surface-variant truncate">@prediction_node</p>
 </div>
 </div>
 </aside>
@@ -315,4 +315,16 @@
 </footer>
 </main>
 </div>
+<script>
+  fetch('/api/me')
+    .then(res => {
+      if (res.status === 401) { window.location.href = '/'; return null; }
+      return res.json();
+    })
+    .then(user => {
+      if (!user) return;
+      document.getElementById('user-name').textContent = user.name;
+      document.getElementById('user-handle').textContent = '@' + user.username;
+    });
+</script>
 </body></html>

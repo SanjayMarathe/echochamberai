@@ -1,0 +1,14 @@
+{
+  "name": "echochamberai",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16",
+    "express": "^4",
+    "express-session": "^1",
+    "twitter-api-v2": "^1"
+  }
+}
