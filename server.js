@@ -4,6 +4,8 @@ import session from 'express-session';
 import { TwitterApi } from 'twitter-api-v2';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { classifyIntent, generateViewpoints, matchUserTweets } from './services/gemini.js';
+import { fetchTopPosts, reconstructThread, fetchUserTweets } from './services/xSearch.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -22,6 +24,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 
+app.use(express.json());
 app.use(express.static(__dirname));
 
 // Landing page
@@ -114,6 +117,83 @@ app.get('/api/feed', async (req, res) => {
       return res.status(402).json({ error: 'X API Basic tier required to read tweets. Upgrade at developer.twitter.com.' });
     }
     res.status(500).json({ error: 'Failed to fetch tweets' });
+  }
+});
+
+// Research page — auth guarded
+app.get('/research', (req, res) => {
+  if (!req.session.user) return res.redirect('/');
+  res.sendFile(join(__dirname, 'research.html'));
+});
+
+// API: Viewpoint comparison
+app.post('/api/research/compare-viewpoints', async (req, res) => {
+  if (!req.session.accessToken) return res.status(401).json({ error: 'Not authenticated' });
+
+  const { user_prompt } = req.body;
+  if (!user_prompt?.trim()) return res.status(400).json({ error: 'user_prompt is required' });
+
+  const { accessToken, user } = req.session;
+
+  try {
+    // 1. Classify intent
+    const { intent } = await classifyIntent(user_prompt);
+
+    // 2. Self-tweet expansion (if triggered)
+    let userPerspective = [];
+    if (intent === 'self_tweet_expansion') {
+      try {
+        const userTweets = await fetchUserTweets(accessToken, user.id);
+        if (userTweets.length > 0) {
+          const { matched_ids } = await matchUserTweets(user_prompt, userTweets);
+          const matchedTweets = userTweets.filter(t => matched_ids.includes(t.id));
+          const threadResults = await Promise.all(
+            matchedTweets.map(async t => ({
+              root: { ...t, author: user },
+              replies: await reconstructThread(accessToken, t.conversation_id, user.id),
+            }))
+          );
+          userPerspective = threadResults;
+        }
+      } catch {
+        // Non-fatal: skip user perspective if it fails
+      }
+    }
+
+    // 3. Generate viewpoints via LLM
+    const { viewpoint_a, viewpoint_b } = await generateViewpoints(user_prompt);
+
+    // 4. Fetch top posts for both viewpoints in parallel
+    const [postsA, postsB] = await Promise.all([
+      fetchTopPosts(accessToken, viewpoint_a.query),
+      fetchTopPosts(accessToken, viewpoint_b.query),
+    ]);
+
+    // 5. Reconstruct threads for all posts in parallel
+    const [threadsA, threadsB] = await Promise.all([
+      Promise.all(postsA.map(async p => ({
+        root: p,
+        replies: await reconstructThread(accessToken, p.conversation_id, p.author_id),
+      }))),
+      Promise.all(postsB.map(async p => ({
+        root: p,
+        replies: await reconstructThread(accessToken, p.conversation_id, p.author_id),
+      }))),
+    ]);
+
+    res.json({
+      viewpoint_a_label: viewpoint_a.label,
+      viewpoint_b_label: viewpoint_b.label,
+      viewpoint_a_threads: threadsA,
+      viewpoint_b_threads: threadsB,
+      ...(userPerspective.length > 0 && { user_perspective: userPerspective }),
+    });
+
+  } catch (err) {
+    console.error(err);
+    if (err.code === 429) return res.status(429).json({ error: 'rate_limit', message: 'X API rate limit hit. Try again in 15 minutes.' });
+    if (err.code === 402) return res.status(402).json({ error: 'upgrade_required', message: 'X API Basic tier required.' });
+    res.status(500).json({ error: 'llm_failed', message: 'Something went wrong. Please try again.' });
   }
 });
 

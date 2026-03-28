@@ -6,6 +6,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "dotenv": "^16",
     "express": "^4",
     "express-session": "^1",
