@@ -81,22 +81,23 @@ app.get('/api/me', (req, res) => {
   res.json(req.session.user);
 });
 
-// API: return home timeline tweets for the authenticated user
+// API: return tweets for the authenticated user via search
 app.get('/api/feed', async (req, res) => {
   if (!req.session.accessToken) return res.status(401).json({ error: 'Not authenticated' });
 
   try {
     const userClient = new TwitterApi(req.session.accessToken);
-    const userId = req.session.user.id;
-    const timeline = await userClient.v2.userTimeline(userId, {
+    const username = req.session.user.username;
+
+    const results = await userClient.v2.search(`from:${username}`, {
       max_results: 10,
       'tweet.fields': ['created_at', 'author_id'],
       'user.fields': ['name', 'username', 'profile_image_url'],
       expansions: ['author_id'],
     });
 
-    const tweets = timeline.data.data ?? [];
-    const users = timeline.data.includes?.users ?? [];
+    const tweets = results.data.data ?? [];
+    const users = results.data.includes?.users ?? [];
     const usersById = Object.fromEntries(users.map(u => [u.id, u]));
 
     const feed = tweets.map(tweet => ({
@@ -109,7 +110,10 @@ app.get('/api/feed', async (req, res) => {
     res.json(feed);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch timeline' });
+    if (err.code === 402) {
+      return res.status(402).json({ error: 'X API Basic tier required to read tweets. Upgrade at developer.twitter.com.' });
+    }
+    res.status(500).json({ error: 'Failed to fetch tweets' });
   }
 });
 

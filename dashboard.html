@@ -316,18 +316,31 @@
 
   // Load feed
   fetch('/api/feed')
-    .then(res => res.json())
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw { status: res.status, message: data.error };
+      return data;
+    })
     .then(tweets => {
       const feed = document.getElementById('feed');
       if (!tweets.length) {
-        feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">No tweets found in your timeline.</p>';
+        feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">No tweets found.</p>';
         return;
       }
       feed.innerHTML = tweets.map(renderCard).join('');
     })
-    .catch(() => {
-      document.getElementById('feed').innerHTML =
-        '<p class="text-center text-on-surface-variant py-16">Could not load timeline.</p>';
+    .catch(err => {
+      const feed = document.getElementById('feed');
+      if (err.status === 402) {
+        feed.innerHTML = `
+          <div class="flex flex-col items-center gap-4 py-16 text-center max-w-sm mx-auto">
+            <span class="material-symbols-outlined text-4xl text-outline">lock</span>
+            <p class="text-sm font-bold text-on-surface">X API upgrade required</p>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Reading tweets requires the X API Basic tier. Upgrade your plan at <a href="https://developer.twitter.com" target="_blank" class="text-primary underline">developer.twitter.com</a> to enable the feed.</p>
+          </div>`;
+      } else {
+        feed.innerHTML = '<p class="text-center text-on-surface-variant py-16">Could not load tweets.</p>';
+      }
     });
 </script>
 </body></html>
