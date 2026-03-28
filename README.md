@@ -217,7 +217,3 @@ echochamberai/
 ```
 
 ---
-
-## License
-
-MIT
